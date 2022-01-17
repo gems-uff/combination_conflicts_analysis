@@ -10,7 +10,7 @@ class Chunk:
         return self.before_context + '<<<<<<<\n' + self.v1 + '=======\n' + self.v2 + '>>>>>>>\n' + self.after_context
 
     def get_chunk(self, chunk_id):
-        file = 'new_result2.json'
+        file = 'data/dataset.json'
 
         with open(file) as f:
             data_listofdict = json.load(f)

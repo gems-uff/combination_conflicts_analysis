@@ -144,7 +144,7 @@ def getSolutionVector(v1, v2, solution):
         return vector 
 
 
-df = pd.read_csv("INITIAL_DATASET.csv")
+df = pd.read_csv("data/INITIAL_DATASET.csv")
 
 
 filtered = df[df['developerdecision'] == 'Combination']
