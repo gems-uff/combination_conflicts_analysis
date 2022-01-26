@@ -1,7 +1,5 @@
 import pandas as pd
 import json
-from pandas.io.json import json_normalize
-
 
 '''
     Cleans the chunk resolution text by removing potential context lines.
@@ -85,7 +83,7 @@ def populate_index(lines, version, index):
     return index
 
 
-def violates_partial_order(v1,v2, context_before, context_after, resolution, chunk_id):
+def violates_partial_order(v1,v2, context_before, context_after, resolution, chunk_id, log_line_violation=False):
     v1 = normalize_lines(v1.splitlines())
     v2 = normalize_lines(v2.splitlines())
     context_before = normalize_lines(context_before.splitlines())
@@ -108,11 +106,17 @@ def violates_partial_order(v1,v2, context_before, context_after, resolution, chu
                     if occurrence.v1:
                         if last_v1_index != None:
                             if occurrence.last_v1_index < last_v1_index:
+                                if log_line_violation:
+                                    print('Side: v1')
+                                    print(line)
                                 return True
                         last_v1_index = occurrence.last_v1_index
                     if occurrence.v2:
                         if last_v2_index != None:
                             if occurrence.last_v2_index < last_v2_index:
+                                if log_line_violation:
+                                    print('Side: v2')
+                                    print(line)
                                 return True
                         last_v2_index = occurrence.last_v2_index
                 else:
