@@ -62,90 +62,75 @@ def remove_empty_lines(lines):
             cleaned_lines.append(line)
     return cleaned_lines
 
-
-def print_lines(lines):
-    for line in lines:
-        print(line)
-
-def partial_sorting(v1, v2, m):
-  v1.append(None)
-  v2.append(None)
-  # The value in matrix[i][j] indicates the index in m which should be searched
-  # in v1[i:] and v2[j:] 
-  matrix = [[None for j in range(len(v2))] for i in range(len(v1))]
-
-  for i in range(len(v1)):
-    for j in range(len(v2)):
-      if i > 0:
-        up = matrix[i-1][j]
-        if m[up] == v1[i-1]:  # match in v1
-          up += 1
-      else:
-        up = 0
-        
-      if j > 0:
-        left = matrix[i][j-1]
-        if m[left] == v2[j-1]:  # match in v2
-          left += 1
-      else:
-        left = 0
-
-      matrix[i][j] = max(up, left)
-
-      if matrix[i][j] == len(m):
-        return True, matrix
-  return False, matrix
-
-'''
-    A resolution violates the partial order when there is no way to arrange the 
-        chunk lines to compose the resolution without breaking their original order
-'''
-def has_partial_order(v1,v2, context_before, context_after, resolution, chunk_id):
-    v1 = normalize_lines(v1.splitlines())
-    v2 = normalize_lines(v2.splitlines())
-    context_before = normalize_lines(context_before.splitlines())
-    context_after = normalize_lines(context_after.splitlines())
-    if type(resolution) == str:
-        resolution = normalize_lines(resolution.splitlines())
-    else:
-        resolution = normalize_lines(resolution)
-    v1 = remove_empty_lines(v1)
-    v2 = remove_empty_lines(v2)
-    resolution = remove_empty_lines(resolution)
-    partial_sorting_status, sorting_matrix  = partial_sorting(v1, v2, resolution)
-    return partial_sorting_status, sorting_matrix
-
-def get_violation_line(sorting_matrix, clean_resolution):
-    match = []
-    index_violation = max(map(max, sorting_matrix))
-    violation_line = clean_resolution[index_violation]
-    return violation_line, index_violation, match
-
-def print_matrix(matrix):
-  for list in matrix:
-    print(list)
-  print()
-
-def test():
-    v1 = 'a\nb\nc\nd'
-    v2 = 'x\ny\nz'
-    m1 = 'a\ny\nc\nz\nd'
-    m2 = 'a\ny\nd\nz\nc'
-    # v1 = ['a', 'b', 'c', 'd']
-    # v2 = ['x', 'y', 'z']
-    # m1 = ['a', 'y', 'c', 'z', 'd']
-    # m2 = ['a', 'y', 'd', 'z', 'c']
-
-    print(has_partial_order(v1, v2,'', '', m1, 0))
-    print(has_partial_order(v1, v2,'', '', m2, 0))
-
 def is_null(row):
     return pd.isna(row['chunk_id'])
+
+'''
+    Returns the percentage of elements in 'comparison_list' that are in 'base_list'
+'''
+def get_occurrence_percentage(base_list, comparison_list):
+    occurrences_count = 0
+    for item in comparison_list:
+        if item in base_list:
+            occurrences_count+=1
+    return round(occurrences_count/len(comparison_list),2)
+
+'''
+    Returns the percentage of lines in 'comparison_list' that are both in 'list1' and 'list2'
+'''
+def get_intersection_percentage(list1, list2, comparison_list):
+    occurrences_count = 0
+    for item in comparison_list:
+        if item in list1 and item in list2:
+            occurrences_count+=1
+    return round(occurrences_count/len(comparison_list),2)
+
+'''
+    Returns a string representing the composition of the resolution in relation to v1 and v2.
+    Groups chunks of repeating lines from each side.
+    Example:
+        v1 = ABC  V2 = CDE  resolution = ABE
+        first line is from v1, second from v1, and third from v2.
+        if no grouping was used, it would return v1v1v2.
+        However, since we are grouping chunks of repeating lines, 
+            it will return v1v2
+    If a line occurs in both v1 and v2, use (v1_2)
+        v1 = ABC V2 = CDE  resolution = BCE
+            returns v1(v1_2)v2
+'''
+def get_chunk_composition(v1, v2, resolution):
+    composition = ''
+    previous_line = ''
+    for line in resolution:
+        in_v1 = line in v1
+        in_v2 = line in v2
+        if in_v1 and in_v2 and previous_line != '(v1_2)':
+            composition+=' (v1_2)'
+            previous_line = '(v1_2)'
+        elif in_v1 and previous_line != 'v1':
+            composition+=' v1'
+            previous_line = 'v1'
+        elif in_v2 and previous_line != 'v2':
+            composition+=' v2'
+            previous_line = 'v2'
+        
+        if in_v1:
+            v1.remove(line)
+        if in_v2:
+            v2.remove(line)
+            
+    return composition
 
 
 def get_size(text):
     return text.count('\n')
-# test()
+
+
+# v1 = ['A', 'B', 'C']
+# v2 = ['C', 'D', 'E']
+# resolution = ['B', 'C', 'E']
+# print(get_chunk_composition(v1, v2, resolution))
+
 if __name__ == '__main__':
     file = 'data/dataset.json'
     with open(file) as f:
@@ -168,19 +153,23 @@ if __name__ == '__main__':
                 resolution_size = len(clean_solution)
                 clean_solution = remove_empty_lines(clean_solution)
                 print(index, chunk_id, chunk_size, resolution_size)
-                partial_order, sorting_matrix = has_partial_order(v1, v2, before_context, after_context, clean_solution, chunk_id)
-                # get_violation_line(sorting_matrix, clean_solution)
-                if not partial_order:
-                    violates_partial_order_count+=1
-                total+=1
-                collected_data.append([chunk_id, partial_order, chunk_size, resolution_size])
+                v1 = normalize_lines(v1.splitlines())
+                v2 = normalize_lines(v2.splitlines())
+                if type(clean_solution) == str:
+                    clean_solution = normalize_lines(clean_solution.splitlines())
+                v1 = remove_empty_lines(v1)
+                v2 = remove_empty_lines(v2)
+                
+                v1_percentage = get_occurrence_percentage(v1, clean_solution)
+                v2_percentage = get_occurrence_percentage(v2, clean_solution)
+                intersection_percentage = get_intersection_percentage(v1, v2, clean_solution)
+                composition = get_chunk_composition(v1, v2, clean_solution)
+                collected_data.append([chunk_id, v1_percentage, v2_percentage, intersection_percentage, composition])
             else:
                 print(f'Resolution of chunk {chunk_id} could not be isolated.')
                 solution = row['solution'].splitlines()
-                collected_data.append([chunk_id, 'manual', chunk_size, len(solution)])
+                collected_data.append([chunk_id, -1, -1, -1, ''])
                 total_manual+=1
 
-    print(f'Total: {total}.  Violates partial order: {violates_partial_order_count} ({(violates_partial_order_count/total)*100:.2f}%)')
-    print(f'Total # of chunks that require manual analysis: {total_manual} ({(total_manual/(total+total_manual))*100:.2f}%)')
-    collected_data_df = pd.DataFrame(collected_data, columns=['chunk_id', 'partial_order', 'chunk_size', 'resolution_size'])
-    collected_data_df.to_csv('data/partial_order_result.csv', index=False)
+    collected_data_df = pd.DataFrame(collected_data, columns=['chunk_id', 'v1_percentage', 'v2_percentage', 'intersection_percentage', 'chunk_composition'])
+    collected_data_df.to_csv('data/resolution_composition.csv', index=False)
