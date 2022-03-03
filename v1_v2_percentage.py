@@ -99,6 +99,8 @@ def get_intersection_percentage(list1, list2, comparison_list):
             returns v1(v1_2)v2
 '''
 def get_chunk_composition(v1, v2, resolution):
+    v1 = v1.copy()
+    v2 = v2.copy()
     composition = ''
     previous_line = ''
     for line in resolution:
@@ -121,6 +123,18 @@ def get_chunk_composition(v1, v2, resolution):
             
     return composition
 
+'''
+    Given v1 or v2, returns the number of lines in the resolution that is missing from v1 or v2
+'''
+def get_missing_lines_amount(chunk_side, resolution):
+    missing_lines_number = 0
+    resolution = resolution.copy()
+    for line in chunk_side:
+        if line not in resolution:
+            missing_lines_number+=1
+        else:
+            resolution.remove(line)
+    return missing_lines_number
 
 def get_size(text):
     return text.count('\n')
@@ -164,12 +178,25 @@ if __name__ == '__main__':
                 v2_percentage = get_occurrence_percentage(v2, clean_solution)
                 intersection_percentage = get_intersection_percentage(v1, v2, clean_solution)
                 composition = get_chunk_composition(v1, v2, clean_solution)
-                collected_data.append([chunk_id, v1_percentage, v2_percentage, intersection_percentage, composition])
+                missing_v1_lines = get_missing_lines_amount(v1, clean_solution)
+                missing_v2_lines = get_missing_lines_amount(v2, clean_solution)
+                if len(v1) > 0:
+                    percentage_missing_v1_lines = round((missing_v1_lines/len(v1))*100,2)
+                else:
+                    percentage_missing_v1_lines = 0
+                if len(v2) > 0:
+                    percentage_missing_v2_lines = round((missing_v2_lines/len(v2))*100,2)
+                else:
+                    percentage_missing_v2_lines = 0
+
+                collected_data.append([chunk_id, v1_percentage, v2_percentage, intersection_percentage,
+                    composition, missing_v1_lines, missing_v2_lines, percentage_missing_v1_lines, percentage_missing_v2_lines, len(v1), len(v2)])
             else:
                 print(f'Resolution of chunk {chunk_id} could not be isolated.')
                 solution = row['solution'].splitlines()
-                collected_data.append([chunk_id, -1, -1, -1, ''])
+                collected_data.append([chunk_id, -1, -1, -1, '', -1, -1, -1, -1, -1, -1])
                 total_manual+=1
 
-    collected_data_df = pd.DataFrame(collected_data, columns=['chunk_id', 'v1_percentage', 'v2_percentage', 'intersection_percentage', 'chunk_composition'])
+    collected_data_df = pd.DataFrame(collected_data, columns=['chunk_id', 'v1_percentage', 'v2_percentage', 'intersection_percentage', 'chunk_composition',
+        'missing_v1_lines', 'missing_v2_lines', 'missing_v1_lines_perc', 'missing_v2_lines_perc', 'v1_size', 'v2_size'])
     collected_data_df.to_csv('data/resolution_composition.csv', index=False)

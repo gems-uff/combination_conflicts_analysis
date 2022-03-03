@@ -15,3 +15,11 @@ def get_chunk_composition_boxplot(data, patterns, variable, variable_text, axis)
 
 def get_chunk_composition_pattern_data(pattern, data):
     return data[data['chunk_composition'] == f' {pattern}']
+
+def print_missing_lines(chunk_side, resolution):
+    resolution = resolution.copy()
+    for line in chunk_side:
+        if line not in resolution:
+            print(line)
+        else:
+            resolution.remove(line)
