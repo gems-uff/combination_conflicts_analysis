@@ -163,7 +163,7 @@ if __name__ == '__main__':
             v2 = row['v2']
             before_context = row['before_context']
             after_context = row['after_context']
-            chunk_size = get_size(before_context) + get_size(v1) + get_size(v2) + get_size(after_context)
+            chunk_size = get_size(v1) + get_size(v2)
             if clean_solution != None:
                 resolution_size = len(clean_solution)
                 clean_solution = remove_empty_lines(clean_solution)
