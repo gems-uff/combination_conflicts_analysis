@@ -59,7 +59,7 @@ def get_normalized_composition_percentage_data(df):
     for i in np.arange(0.1, 0.6, 0.1):
         i = round(i, 1)
         last_i = round(last_i, 1)
-        range = f'[{last_i}, {i})'
+        range = f'$\geq${int(last_i*100)}%,$<${int(i*100)}%'
         v1_count = len(df[(df['normalized_v1_percentage'] >= last_i) & (df['normalized_v1_percentage'] < i)])
         v2_count = len(df[(df['normalized_v2_percentage'] >= last_i) & (df['normalized_v2_percentage'] < i)])
         v1_data.append([v1_count, range])
@@ -67,15 +67,15 @@ def get_normalized_composition_percentage_data(df):
         last_i = i
         # print(range)
 
-    v1_data.append([len(df[df['normalized_v1_percentage'] == 0.5]), '0.5'])
-    v2_data.append([len(df[df['normalized_v2_percentage'] == 0.5]), '0.5'])
+    v1_data.append([len(df[df['normalized_v1_percentage'] == 0.5]), '50%'])
+    v2_data.append([len(df[df['normalized_v2_percentage'] == 0.5]), '50%'])
     # print('0.5')
     
 
     for i in np.arange(0.6, 1.01, 0.1):
         i = round(i, 1)
         last_i = round(last_i, 1)
-        range = f'({last_i}, {i}]'
+        range = f'$>${int(last_i*100)}%,$\leq${int(i*100)}%'
         # filter_start = (df['normalized_v1_percentage']>=int(last_i))
         # filter_end = (df['normalized_v1_percentage'] < int(i))
         v1_count = len(df[(df['normalized_v1_percentage'] > last_i) & (df['normalized_v1_percentage'] <= i)])
