@@ -76,6 +76,22 @@ def get_occurrence_percentage(base_list, comparison_list):
     return round(occurrences_count/len(comparison_list),2)
 
 '''
+    Returns the normalized (sums to 100%) percentage of elements in 'comparison_list' 
+        that are in 'base_list'. If an element is present in both base_list and secondary_list,
+            then count the occurrence as 0.5. 
+'''
+def get_normalized_occurrence_percentage(base_list, secondary_list, comparison_list):
+    occurrences_count = 0
+    for item in comparison_list:
+        if item in base_list:
+            if item not in secondary_list:
+                occurrences_count+=1
+            else:
+                occurrences_count+=0.5
+        
+    return round(occurrences_count/len(comparison_list),2)
+
+'''
     Returns the percentage of lines in 'comparison_list' that are both in 'list1' and 'list2'
 '''
 def get_intersection_percentage(list1, list2, comparison_list):
@@ -176,6 +192,10 @@ if __name__ == '__main__':
                 
                 v1_percentage = get_occurrence_percentage(v1, clean_solution)
                 v2_percentage = get_occurrence_percentage(v2, clean_solution)
+
+                v1_percentage_norm = get_normalized_occurrence_percentage(v1, v2, clean_solution)
+                v2_percentage_norm = get_normalized_occurrence_percentage(v2, v1, clean_solution)
+
                 intersection_percentage = get_intersection_percentage(v1, v2, clean_solution)
                 composition = get_chunk_composition(v1, v2, clean_solution)
                 missing_v1_lines = get_missing_lines_amount(v1, clean_solution)
@@ -188,15 +208,19 @@ if __name__ == '__main__':
                     percentage_missing_v2_lines = round((missing_v2_lines/len(v2))*100,2)
                 else:
                     percentage_missing_v2_lines = 0
-
-                collected_data.append([chunk_id, v1_percentage, v2_percentage, intersection_percentage,
-                    composition, missing_v1_lines, missing_v2_lines, percentage_missing_v1_lines, percentage_missing_v2_lines, len(v1), len(v2)])
+                chunk_size_delta = len(v2) - len(v1)
+                collected_data.append([chunk_id, v1_percentage, v2_percentage, v1_percentage_norm,
+                    v2_percentage_norm, intersection_percentage, composition, missing_v1_lines,
+                    missing_v2_lines, percentage_missing_v1_lines, percentage_missing_v2_lines, 
+                    len(v1), len(v2), chunk_size_delta])
             else:
                 print(f'Resolution of chunk {chunk_id} could not be isolated.')
                 solution = row['solution'].splitlines()
-                collected_data.append([chunk_id, -1, -1, -1, '', -1, -1, -1, -1, -1, -1])
+                collected_data.append([chunk_id, -1, -1, -1, -1, -1, '', -1, -1, -1, -1, -1, -1])
                 total_manual+=1
 
-    collected_data_df = pd.DataFrame(collected_data, columns=['chunk_id', 'v1_percentage', 'v2_percentage', 'intersection_percentage', 'chunk_composition',
-        'missing_v1_lines', 'missing_v2_lines', 'missing_v1_lines_perc', 'missing_v2_lines_perc', 'v1_size', 'v2_size'])
+    collected_data_df = pd.DataFrame(collected_data, columns=['chunk_id', 'v1_percentage', 'v2_percentage',
+     'normalized_v1_percentage', 'normalized_v2_percentage', 'intersection_percentage',
+     'chunk_composition', 'missing_v1_lines', 'missing_v2_lines', 'missing_v1_lines_perc', 
+     'missing_v2_lines_perc', 'v1_size', 'v2_size', 'chunk_size_delta'])
     collected_data_df.to_csv('data/resolution_composition.csv', index=False)

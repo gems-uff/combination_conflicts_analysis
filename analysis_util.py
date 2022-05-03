@@ -49,6 +49,125 @@ def get_strategies_plot_df(df, v1_only, v2_only, v1v2, v2v1, variable):
     df['others'] = df['others'] * 100
     return df
 
+def get_strategies_plot_data2(df, v1_only, v2_only, v1v2, v2v1, delta_values, last_delta, variable):
+    data = []
+    # last_delta = delta_values[0] - 1
+    for delta in delta_values:
+        df_delta = df[(df[variable] > last_delta) & (df[variable] <= delta)]
+        if len(df_delta) > 0:
+            v1_c = v1_only[(v1_only[variable] > last_delta) & (v1_only[variable] <= delta)]
+            v2_c = v2_only[(v2_only[variable] > last_delta) & (v2_only[variable] <= delta)]
+            v1v2_c = v1v2[(v1v2[variable] > last_delta) & (v1v2[variable] <= delta)]
+            v2v1_c = v2v1[(v2v1[variable] > last_delta) & (v2v1[variable] <= delta)]
+            others_c = len(df_delta) - len(v1_c) - len(v2_c) - len(v1v2_c) - len(v2v1_c)
+            v1_p = len(v1_c)/len(df_delta)
+            v2_p = len(v2_c)/len(df_delta)
+            v1v2_p = len(v1v2_c)/len(df_delta)
+            v2v1_p = len(v2v1_c)/len(df_delta)
+            others_p = others_c / len(df_delta)
+            data.append([delta, v1_p, v2_p, v1v2_p, v2v1_p, others_p])
+        last_delta = delta
+    return data
+
+def get_delta_percentages(df_delta, v1_only, v2_only, v1v2, v2v1, variable, start, end):
+    if len(df_delta) > 0:
+        # print(f'> {start} and <= {end}') # uncomment here to show the bins
+        v1_c = v1_only[(v1_only[variable] > start) & (v1_only[variable] <= end)]
+        v2_c = v2_only[(v2_only[variable] > start) & (v2_only[variable] <= end)]
+        v1v2_c = v1v2[(v1v2[variable] > start) & (v1v2[variable] <= end)]
+        v2v1_c = v2v1[(v2v1[variable] > start) & (v2v1[variable] <= end)]
+        others_c = len(df_delta) - len(v1_c) - len(v2_c) - len(v1v2_c) - len(v2v1_c)
+        v1_p = len(v1_c)/len(df_delta)
+        v2_p = len(v2_c)/len(df_delta)
+        v1v2_p = len(v1v2_c)/len(df_delta)
+        v2v1_p = len(v2v1_c)/len(df_delta)
+        others_p = others_c / len(df_delta)
+        return [end, v1_p, v2_p, v1v2_p, v2v1_p, others_p]
+
+'''
+    This is the version we are using in the SBES paper
+'''
+def get_strategies_plot_df2(df, v1_only, v2_only, v1v2, v2v1, variable):
+    delta_max = int(df[variable].max())
+    delta_min = int(df[variable].min()) - 1
+    bin_size = 50
+    range_max = 350 
+    
+    negative_values = [-x for x in range(10, range_max + 1, bin_size)]
+    positive_values = [x for x in range(10, range_max + 1, bin_size)]
+    negative_values = negative_values[::-1]
+    middle_values = [x for x in range(-9, 10)]
+    delta_values = negative_values[1:] + middle_values + positive_values[:-1]
+    data = []
+    # first delta includes the range from delta_min to the first delta
+    range_start = delta_min
+    range_end = negative_values[0]
+    df_delta = df[(df[variable] > range_start) & (df[variable] <= range_end)]
+    data.append(get_delta_percentages(df_delta, v1_only, v2_only, v1v2, v2v1, variable, range_start, range_end))
+
+    range_start = range_end
+    for delta in delta_values:
+        range_end = delta
+        df_delta = df[(df[variable] > range_start) & (df[variable] <= range_end)]
+        if len(df_delta) > 0:
+            data.append(get_delta_percentages(df_delta, v1_only, v2_only, v1v2, v2v1, variable, range_start, range_end))
+        range_start = range_end
+        
+    # last delta includes the range from delta_max to the actual last delta
+    range_start = positive_values[-1] - 1
+    range_end = delta_max
+    df_delta = df[(df[variable] > range_start) & (df[variable] <= range_end)]
+    data.append(get_delta_percentages(df_delta, v1_only, v2_only, v1v2, v2v1, variable, range_start, range_end))
+
+    df = pd.DataFrame(data, columns=['delta', 'v1 only', 'v2 only', 'v1v2', 'v2v1', 'others'])
+    df['v1 only'] = df['v1 only'] * 100
+    df['v2 only'] = df['v2 only'] * 100
+    df['v1v2'] = df['v1v2'] * 100
+    df['v2v1'] = df['v2v1'] * 100
+    df['others'] = df['others'] * 100
+    return df[['delta', 'v1 only', 'v1v2', 'others', 'v2v1', 'v2 only']]
+
+def get_strategies_plot_bins_percentages(df, v1_only, v2_only, v1v2, v2v1, variable):
+    delta_max = int(df[variable].max())
+    delta_min = int(df[variable].min()) - 1
+    bin_size = 50
+    range_max = 350 
+    
+    negative_values = [-x for x in range(10, range_max + 1, bin_size)]
+    negative_values = negative_values[1:]
+    negative_values = negative_values[::-1]
+    positive_values = [x for x in range(10, range_max + 1, bin_size)]
+    positive_values = positive_values[1:]
+    middle_values = [x for x in range(-10, 11)]
+    delta_values = negative_values[1:] + middle_values + positive_values[:-1]
+    percentages = []
+    # first delta includes the range from delta_min to the first delta
+    range_start = delta_min
+    range_end = negative_values[0]
+    df_delta = df[(df[variable] > range_start) & (df[variable] <= range_end)]
+    percentage = round((len(df_delta)/len(df))*100,2)
+    percentages.append([range_end, percentage])
+
+    range_start = range_end
+    for delta in delta_values:
+        range_end = delta
+        df_delta = df[(df[variable] > range_start) & (df[variable] <= range_end)]
+        if len(df_delta) > 0:
+            percentage = round((len(df_delta)/len(df))*100,2)
+            percentages.append([range_end, percentage])
+        range_start = range_end
+        
+    # last delta includes the range from delta_max to the actual last delta
+    range_start = positive_values[-1] - 1
+    range_end = delta_max
+    df_delta = df[(df[variable] > range_start) & (df[variable] <= range_end)]
+    percentage = round((len(df_delta)/len(df))*100,2)
+    percentages.append([range_end, percentage])
+
+    df = pd.DataFrame(percentages, columns=['delta', 'percentage'])
+
+    return df
+
 def get_chunk_composition_pattern_data(pattern, data):
     return data[data['chunk_composition'] == f' {pattern}']
 
@@ -59,7 +178,8 @@ def get_normalized_composition_percentage_data(df):
     for i in np.arange(0.1, 0.6, 0.1):
         i = round(i, 1)
         last_i = round(last_i, 1)
-        range = f'$\geq${int(last_i*100)}%,$<${int(i*100)}%'
+        # range = f'$\geq${int(last_i*100)}%,$<${int(i*100)}%'
+        range = f'[{int(last_i*100)}%, {int(i*100)}%)'
         v1_count = len(df[(df['normalized_v1_percentage'] >= last_i) & (df['normalized_v1_percentage'] < i)])
         v2_count = len(df[(df['normalized_v2_percentage'] >= last_i) & (df['normalized_v2_percentage'] < i)])
         v1_data.append([v1_count, range])
@@ -75,7 +195,8 @@ def get_normalized_composition_percentage_data(df):
     for i in np.arange(0.6, 1.01, 0.1):
         i = round(i, 1)
         last_i = round(last_i, 1)
-        range = f'$>${int(last_i*100)}%,$\leq${int(i*100)}%'
+        # range = f'$>${int(last_i*100)}%,$\leq${int(i*100)}%'
+        range = f'({int(last_i*100)}%, {int(i*100)}%]'
         # filter_start = (df['normalized_v1_percentage']>=int(last_i))
         # filter_end = (df['normalized_v1_percentage'] < int(i))
         v1_count = len(df[(df['normalized_v1_percentage'] > last_i) & (df['normalized_v1_percentage'] <= i)])
