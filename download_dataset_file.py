@@ -11,7 +11,7 @@ def main():
     destination_path = path.joinpath('data','dataset.zip')
     
     print(f'Downloading zip file to {destination_path} ...')
-
+    # https://drive.google.com/file/d/1YCepn8uNA2ec_nl2lGaEi-W2WlwOlF2f
     gdd.download_file_from_google_drive(file_id='1YCepn8uNA2ec_nl2lGaEi-W2WlwOlF2f',
                                     dest_path=destination_path,
                                     unzip=True, overwrite=True)

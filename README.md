@@ -1,3 +1,14 @@
+Artifacts (scripts) and data used in the SBES 2022 paper: Towards Merge Conflict Resolution by Combining Existing Lines of Code.
+
+These artifacts are related to the analysis of merge conflicts that were resolved by the developers using a combination of the conflicting lines. The detailed methodology is described in the paper. 
+
+To reproduce the results obtained in the study, follow these instructions:
+
+1. Clone this repository.
+2. Install the requirements using pip (requirements.txt)
+
+Follow the execution order displayed in the table below. Just ignore the scripts dataCollection.py and extract_data.py if you do not have access to the original conflicts dataset collected by Ghiotto et al. 2020.
+
 ## Scripts:
 <table>
     <thead>
@@ -75,6 +86,7 @@
 </table>
 
 
+After executing the scripts in the order above, use each of the following notebooks to obtain the data used to answer the research questions.
 
 ## Notebooks:
 
@@ -104,24 +116,31 @@
     </tr>
     <tr>
         <td>2</td>
-        <td>partial_order_analysis.ipynb</td>
-        <td>data/partial_order_result.csv, data/malformed_chunks.csv</td>
+        <td>analyze_distributions.ipynb</td>
+        <td>data/all_chunks_ghiotto.csv, data/chunks_info.csv, data/partial_order_result.csv, data/resolution_composition.csv, data/projects_intersection.csv</td>
         <td></td>
-        <td>Notebook to perform analysis using the collected partial order data.</td>
+        <td>Notebook to perform analysis about the distribution and characteristics of the conflicts (RQ1).</td>
     </tr>
     <tr>
         <td>3</td>
-        <td>violation_inspection_analysis.ipynb</td>
-        <td>data/violate_partial_order_inspection.csv (generated after manual analysis of chunks' sample)</td>
+        <td>partial_order_analysis.ipynb</td>
+        <td>data/partial_order_result.csv, data/malformed_chunks.csv</td>
         <td></td>
-        <td>Notebook for analyzing cases where the partial order is violated.</td>
+        <td>Notebook to perform analysis using the collected partial order data (RQ2).</td>
     </tr>
     <tr>
         <td>4</td>
+        <td>violation_inspection_analysis.ipynb</td>
+        <td>data/violate_partial_order_inspection.csv (generated after manual analysis of chunks' sample)</td>
+        <td></td>
+        <td>Notebook for analyzing cases where the partial order is violated (RQ2).</td>
+    </tr>
+    <tr>
+        <td>5</td>
         <td>resolution_composition_analysis.ipynb</td>
         <td>data/resolution_composition.csv</td>
         <td></td>
-        <td>Notebook for analyzing the composition of conflicting chunks resolution lines.</td>
+        <td>Notebook for analyzing the composition of conflicting chunks resolution lines (RQ3).</td>
     </tr>
     
 </table>
@@ -129,4 +148,7 @@
 
 
 
+References:
+
+Gleiph Ghiotto, Leonardo Murta, Márcio Barros, and André van der Hoek. 2020. On the Nature of Merge Conflicts: A Study of 2,731 Open Source Java Projects Hosted by GitHub. IEEE Transactions on Software Engineering 46, 8 (2020), 892–915. https://doi.org/10.1109/TSE.2018.2871083
 
