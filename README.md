@@ -1,4 +1,4 @@
-Artifacts (scripts) and data used in the SBES 2022 paper: Towards Merge Conflict Resolution by Combining Existing Lines of Code.
+Artifacts (scripts) and data used in the SBES 2022 paper: Towards Merge Conflict Resolution by Combining Existing Lines of Code and JSERD 2023 submission: How code composition strategies affect merge conflict resolution?
 
 These artifacts are related to the analysis of merge conflicts that were resolved by the developers using a combination of the conflicting lines. The detailed methodology is described in the paper. 
 
@@ -142,6 +142,21 @@ After executing the scripts in the order above, use each of the following notebo
         <td></td>
         <td>Notebook for analyzing the composition of conflicting chunks resolution lines (RQ3).</td>
     </tr>
+        <tr>
+        <td>6</td>
+        <td>conflict_kind_analysis.ipynb</td>
+        <td></td>
+        <td></td>
+        <td>Notebook for analyzing the language constructs present in the conflicting chunks (RQ4).</td>
+    </tr>
+    </tr>
+        <tr>
+        <td>7</td>
+        <td>rq5_analysis.ipynb</td>
+        <td></td>
+        <td></td>
+        <td>Notebook for analyzing the language constructs present in the conflicting chunks resolutions (RQ5).</td>
+    </tr>
     
 </table>
 
@@ -151,4 +166,6 @@ After executing the scripts in the order above, use each of the following notebo
 References:
 
 Gleiph Ghiotto, Leonardo Murta, Márcio Barros, and André van der Hoek. 2020. On the Nature of Merge Conflicts: A Study of 2,731 Open Source Java Projects Hosted by GitHub. IEEE Transactions on Software Engineering 46, 8 (2020), 892–915. https://doi.org/10.1109/TSE.2018.2871083
+
+Campos Junior, H. D. S., de Menezes, G. G. L., Barros, M. D. O., van der Hoek, A., & Murta, L. G. P. (2022, October). Towards Merge Conflict Resolution by Combining Existing Lines of Code. In Proceedings of the XXXVI Brazilian Symposium on Software Engineering (pp. 425-434). https://doi.org/10.1145/3555228.3555229
 
