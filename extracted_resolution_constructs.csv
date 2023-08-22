@@ -1,0 +1,959 @@
+,chunk_id,constructs,solution
+81,777948,"assert statement, comment, method invocation","        b2.do_normal_white_move('h','2','h','4');
+        assert(b2.toFEN().equals(""k7/8/P7/8/6pP/8/8/K7 b - h3 0 3""));
+        b2.do_normal_black_move('g','4','h','3');
+        assert(b2.toFEN().equals(""k7/8/P7/8/8/7p/8/K7 w - - 0 4""));
+      }
+      // testing setting and resetting
+      {
+"
+276,781756,"import, interface declaration","import java.util.Set;
+
+public interface BinarySpecInternal extends BinarySpec {
+    ModelType<BinarySpec> PUBLIC_MODEL_TYPE = ModelType.of(BinarySpec.class);
+    
+    /**
+     * Return all language source sets.
+     * This method is overridden by NativeTestSuiteBinarySpec to include the source sets from the tested binary.
+     */
+    Set<LanguageSourceSet> getAllSources();
+
+    void setBinarySources(FunctionalSourceSet sources);
+
+"
+330,782705,,"
+    ModuleVersionArtifactMetaData artifact(Artifact artifact);
+
+    ModuleVersionArtifactMetaData artifact(String type, @Nullable String extension, @Nullable String classifier);
+
+    boolean isMetaDataOnly();
+}
+"
+890,797447,,"	}
+
+
+	@Override
+	public boolean isTotalFinalized(ObjectContainer container) {
+		if(finished && succeeded) return true;
+		if(progressPending == null) return false;
+		else {
+"
+1073,804832,,"import java.util.List;
+import java.util.Map;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+"
+1312,818927,,"import voldemort.annotations.jmx.JmxManaged;
+import voldemort.server.AbstractSocketService;
+import voldemort.server.ServiceType;
+import voldemort.server.StatusManager;
+import voldemort.server.protocol.RequestHandlerFactory;
+import voldemort.utils.JmxUtils;
+
+/**
+ * The VoldemortService that loads up the socket server
+"
+2461,932676,,"  public void _testSingleThreadFailure(MockDirectoryWrapper.Failure failure) throws IOException {
+    MockDirectoryWrapper dir = newMockDirectory();
+
+    IndexWriterConfig iwc = newIndexWriterConfig(new MockAnalyzer(random()))
+      .setMaxBufferedDocs(2)
+      .setMergeScheduler(new ConcurrentMergeScheduler())
+      .setCommitOnClose(false);
+
+    if (iwc.getMergeScheduler() instanceof ConcurrentMergeScheduler) {
+      iwc.setMergeScheduler(new SuppressingConcurrentMergeScheduler() {
+          @Override
+          protected boolean isOK(Throwable th) {
+            return th instanceof AlreadyClosedException ||
+              (th instanceof IllegalStateException && th.getMessage().contains(""this writer hit an unrecoverable error""));
+          }
+        });
+    }
+
+    IndexWriter writer = new IndexWriter(dir, iwc);
+    FieldTypes fieldTypes = writer.getFieldTypes();
+    fieldTypes.enableTermVectors(""field"");
+    fieldTypes.enableTermVectorOffsets(""field"");
+    fieldTypes.enableTermVectorPositions(""field"");
+    final Document doc = writer.newDocument();
+    doc.addLargeText(""field"", ""aaa bbb ccc ddd eee fff ggg hhh iii jjj"");
+
+    for(int i=0;i<6;i++) {
+      writer.addDocument(doc);
+    }
+
+"
+2565,933301,,"import org.graylog2.rest.helpers.OutputFilter;
+import org.graylog2.rest.models.system.outputs.responses.OutputSummary;
+import org.graylog2.rest.resources.streams.outputs.AvailableOutputSummary;
+import org.graylog2.rest.resources.streams.outputs.OutputListResponse;
+import org.graylog2.shared.rest.resources.RestResource;
+import org.graylog2.shared.security.RestPermissions;
+import org.graylog2.streams.OutputService;
+import org.graylog2.streams.outputs.CreateOutputRequest;
+import org.graylog2.utilities.ConfigurationMapConverter;
+"
+2589,933461,,"import org.graylog2.rest.resources.users.responses.UserList;
+import org.graylog2.security.AccessToken;
+import org.graylog2.security.AccessTokenService;
+import org.graylog2.shared.security.RestPermissions;
+import org.graylog2.shared.rest.resources.RestResource;
+import org.graylog2.shared.users.UserService;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+"
+2792,935707,,"        return percolatorQueriesRegistry.stats();
+    }
+
+    public IndexEventListener getIndexEventListener() {
+        return indexEventListener;
+    }
+
+    /**
+     * Asynchronously refreshes the engine for new search operations to reflect the latest
+     * changes.
+     */
+    public void refreshAsync(final String reason) {
+        engineConfig.getThreadPool().executor(ThreadPool.Names.REFRESH).execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        refresh(reason);
+                    } catch (EngineClosedException ex) {
+                        // ignore
+                    }
+                }
+            });
+    }
+
+    final class EngineRefresher implements Runnable {
+        @Override
+        public void run() {
+            // we check before if a refresh is needed, if not, we reschedule, otherwise, we fork, refresh, and then reschedule
+"
+2815,930173,,"     * @param keys
+     * @return Multi bulk reply
+     */
+    public List<String> mget(final String... keys) {
+        runChecks();
+        client.mget(keys);
+        return client.getMultiBulkReply();
+    }
+"
+3252,939577,,"     * @param termVectors Stores the actual term vectors as a {@link BytesRef}.
+     */
+    public TermVectorsFields(BytesReference headerRef, BytesReference termVectors) throws IOException {
+        StreamInput header = StreamInput.wrap(headerRef.toBytesArray());
+        fieldMap = new ObjectLongHashMap<>();
+        // here we read the header to fill the field offset map
+        String headerString = header.readString();
+"
+3331,942185,,"	private final static Pattern prioPattern = Pattern.compile(""\\(([A-Z])\\) (.*)"");
+
+	private final static Pattern contextPattern = Pattern.compile(""@(\\w+)"");
+	
+	private static File storageDirectory = null;
+	
+	public static File getStorageDirectory()
+	{
+		return storageDirectory;
+	}
+
+	public static Task createTask(int id, String line){
+		Matcher m = prioPattern.matcher(line);
+"
+3363,943472,,"		decisionId = i.getIntExtra(MemorizingTrustManager.DECISION_INTENT_ID, MTMDecision.DECISION_INVALID);
+		int titleId = i.getIntExtra(MemorizingTrustManager.DECISION_TITLE_ID, R.string.mtm_accept_cert);
+		String cert = i.getStringExtra(MemorizingTrustManager.DECISION_INTENT_CERT);
+		LOGGER.log(Level.FINE, ""onResume with "" + i.getExtras() + "" decId="" + decisionId + "" data: "" + i.getData());
+		dialog = new AlertDialog.Builder(this).setTitle(titleId)
+			.setMessage(cert)
+			.setPositiveButton(R.string.mtm_decision_always, this)
+			.setNeutralButton(R.string.mtm_decision_once, this)
+"
+3467,946830,,"    super.flushEvents(timeout);
+    _rtdc.flushEvents(timeout);
+    refreshCache(timeout);
+  }
+
+  /**
+   * Flush events to the memory index.
+   * 
+   * @throws ZoieException
+   */
+  public void flushEventsToMemoryIndex(long timeout) throws ZoieException
+  {
+    super.flushEvents(timeout);
+    refreshCache(timeout);
+  }
+
+  public boolean isReadltimeIndexing()
+  {
+    return _realtimeIndexing;
+  }
+
+  /**
+   * return a list of ZoieIndexReaders. These readers are reference counted and
+   * this method should be used in pair with
+   * returnIndexReaders(List<ZoieIndexReader<R>> readers)
+   * {@link #returnIndexReaders(List)}. It is typical that we create a
+   * MultiReader from these readers. When creating MultiReader, it should be
+   * created with the closeSubReaders parameter set to false in order to do
+   * reference counting correctly.
+   * @see proj.zoie.api.IndexReaderFactory#getIndexReaders()
+   */
+  public List<ZoieIndexReader<R>> getIndexReaders() throws IOException
+  {
+    long t0 = System.currentTimeMillis();
+    cachedreadersLock.readLock().lock();
+    List<ZoieIndexReader<R>> readers = cachedreaders; //_searchIdxMgr.getIndexReaders();
+    for(ZoieIndexReader<R> r : readers)
+    {
+        r.incZoieRef();
+"
+3587,960978,,"                .withNonTopLevelContainerUpdater(NullEquivalenceUpdater.<Container>get())
+                .build());
+        
+        Set<Publisher> youViewPublishers = Sets.union(Sets.difference(acceptablePublishers, ImmutableSet.of(YOUVIEW_STAGE)), ImmutableSet.of(YOUVIEW));
+        Predicate<Broadcast> youviewBroadcastFilter = new Predicate<Broadcast>(){
+            @Override
+            public boolean apply(Broadcast input) {
+                DateTime twoWeeksAgo = new DateTime(DateTimeZones.UTC).minusDays(15);
+                return input.getTransmissionTime().isAfter(twoWeeksAgo);
+            }
+        };
+        
+        updaters.register(YOUVIEW, SourceSpecificEquivalenceUpdater.builder(YOUVIEW)
+                .withItemUpdater(broadcastItemEquivalenceUpdater(youViewPublishers, Score.negativeOne(),youviewBroadcastFilter))
+                .withTopLevelContainerUpdater(broadcastItemContainerEquivalenceUpdater(youViewPublishers))
+"
+3784,962903,,"import org.atlasapi.media.entity.MediaType;
+import org.atlasapi.media.entity.Publisher;
+import org.atlasapi.media.entity.Specialization;
+import org.atlasapi.persistence.media.ModelTranslator;
+import org.joda.time.DateTime;
+
+import com.google.common.collect.ImmutableSet;
+import com.metabroadcast.common.media.MimeType;
+"
+4341,976654,,"import org.hibernate.internal.util.config.ConfigurationHelper;
+import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
+import org.hibernate.service.spi.UnknownUnwrapTypeException;
+import org.jboss.logging.Logger;
+import org.logicalcobwebs.proxool.ProxoolException;
+import org.logicalcobwebs.proxool.ProxoolFacade;
+import org.logicalcobwebs.proxool.configuration.JAXPConfigurator;
+"
+4442,978354,,"	public void upgradeDB(Context context) throws XmlPullParserException, IOException {    	
+		//cleanTables();    	
+		//initializeDB();
+
+		/* 
+		 * Modify database keeping data:
+		 * 1. Create temporary table __DB_TABLE_GROUPS (with the new model)
+		 * 2. insert in the temporary table all the data (in the new model) from the old table
+		 * 3. drop table DB_TABLE_GROUPS
+		 * 4. create DB_TABLE_GROUPS with the new model. 
+		 * 5. insert in DB_TABLE_GROUPS all the data from __DB_TABLE_GROUPS
+		 * 6. insert in DB_TABLE_GROUPS_GROUPTYPES the relationships between the deleted groups and group types
+		 * 7. drop __DB_TABLE_GROUPS
+		 * Just to modify database without to keep data just 7,6.
+		 * 
+		 * */
+		/*TODO �esto se deber�a ejecutar s�lo cuando se pase una version < 12 a una mayor de 13? en el resto de los casos no 
+		�con la version de swadroid?*/
+		
+		/* From version 11 to 12 
+		 * changes on courses table:
+"
+4470,979137,,"    static final int GPBF_UTF8_FLAG = 1 << 11;
+
+    /**
+     * Supported General Purpose Bit Flags Mask.
+     * Bit mask of bits not supported.
+     * Note: The only bit that we will enforce at this time
+     * is the encrypted bit. Although other bits are not supported,
+     * we must not enforce them as this could break some legitimate
+     * use cases (See http://b/8617715).
+     */
+    static final int GPBF_UNSUPPORTED_MASK = GPBF_ENCRYPTED_FLAG;
+
+    /**
+     * Open zip file for reading.
+     */
+    public static final int OPEN_READ = 1;
+
+"
+4577,983390,,"                // This volume doesn't have any snapshots. Nothing do delete.
+                continue;
+            }
+            List<HostVO> ssHosts = _ssvmMgr.listSecondaryStorageHostsInOneZone(dcId);
+            SwiftTO swift = _swiftDao.getSwiftTO(null);
+            if (swift == null) {
+                for (HostVO ssHost : ssHosts) {
+                    DeleteSnapshotBackupCommand cmd = new DeleteSnapshotBackupCommand(null, ssHost.getStorageUrl(), dcId, accountId, volumeId, """", true);
+                    Answer answer = null;
+                    try {
+                        answer = _agentMgr.sendToSSVM(dcId, cmd);
+                    } catch (Exception e) {
+"
+4692,985519,,"
+import org.apache.log4j.Logger;
+
+import com.cloud.api.BaseListCmd;
+import com.cloud.api.Implementation;
+import com.cloud.api.Parameter;
+import com.cloud.api.ResponseObject;
+import com.cloud.api.response.ListResponse;
+import com.cloud.api.response.ServiceOfferingResponse;
+import com.cloud.offering.NetworkOffering.GuestIpType;
+import com.cloud.service.ServiceOfferingVO;
+
+@Implementation(method=""searchForServiceOfferings"")
+"
+4735,985422,,"    @Test
+    public void testFirstTimeViewPathExists() throws Exception {
+        workspace.child(""viewpath"").mkdirs();
+
+        when(cleartool.doesViewExist(""viewname"")).thenReturn(Boolean.FALSE);
+        when(taskListener.getLogger()).thenReturn(System.out);
+        when(launcher.isUnix()).thenReturn(Boolean.TRUE);
+        when(launcher.getListener()).thenReturn(taskListener);
+                    ignoring(clearTool).getUpdtFileName();
+
+        CheckOutAction action = new SnapshotCheckoutAction(cleartool, new ConfigSpec(""config\r\nspec"", true), new String[] { ""foo"" }, false, ""viewpath"");
+        boolean checkoutResult = action.checkout(launcher, workspace, ""viewname"");
+        List<FilePath> directories = workspace.listDirectories();
+        boolean foundRenamedDirectory = false;
+"
+4754,985837,,"import hudson.model.TopLevelItem;
+import hudson.model.listeners.RunListener;
+import java.util.List;
+import org.junit.Rule;
+import org.junit.Test;
+import org.jvnet.hudson.test.JenkinsRule;
+import static org.junit.Assert.*;
+"
+5693,1031020,,"            if (paths.contains(path) == false) {
+                paths.add(path);
+                results.add(next);
+                if (FileSystemCompatibility.isDirectory(next)) {
+                    FileStatus[] children;
+                    try {
+                        children = fs.listStatus(path);
+                    } catch (FileNotFoundException e) {
+                        children = null;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(MessageFormat.format(""Target file is not found: {0}"", path), e);
+                        }
+                    }
+                    if (children != null) {
+                        Collections.addAll(work, children);
+                    }
+                }
+            }
+        }
+"
+5725,1035122,,"		try (Git git = new Git(db)) {
+			git.commit().setMessage(""initial commit"").call();
+
+			assertStringArrayEquals(
+					""fatal: A branch named 'master' already exists."",
+				executeUnchecked(""git checkout -b master""));
+		}
+	}
+
+	@Test
+"
+5985,1045761,,"   * generate prologue code for each function body
+   */
+  protected void doPrologue(WalkContext context) {
+    // perform a lexical write to copy the value stored in the local
+    // associated with each parameter to the lexical name
+    final CAstEntity entity = context.top();
+    Set<String> exposedNames = entity2ExposedNames.get(entity);
+    if (exposedNames != null) {
+      for (String arg : entity.getArgumentNames()) {
+        if (exposedNames.contains(arg)) {
+          final Scope currentScope = context.currentScope();
+          Symbol symbol = currentScope.lookup(arg);
+          assert symbol.getDefiningScope() == currentScope;
+          int argVN = symbol.valueNumber();
+          Access A = new Access(arg, context.getEntityName(entity), argVN);
+          context.cfg().addInstruction(new AstLexicalWrite(context.cfg().currentInstruction, A));
+        }
+      }
+    }
+"
+6253,1055401,,"     */
+    public MetamodelConfiguration(Map properties, final KunderaMetadata metadata, String... persistenceUnits)
+    {
+        super(persistenceUnits, properties, metadata);
+        ValidationFactoryGenerator generator = new ValidationFactoryGenerator();
+        this.factory = generator.getFactory(ValidationFactoryType.BOOT_STRAP_VALIDATION);
+    }
+
+    /*
+"
+6671,1070434,," * <p>Init parameters:
+ *
+ * <dl>
+ * <dt>compress</dt>
+ * <dd>It specifies whether to compress the output if the browser supports the compression (Accept-Encoding).</dd>
+ * <dt>extension0, extension1...</dt>
+ * <dd>It specifies an AU extension ({@link AuExtension}).
+ * The extension0 parameter specifies
+ * the first AU extension, the extension1 parameter the second AU extension,
+ * and so on.<br/>
+ * The syntax of the value is<br/>
+ * <code>/prefix=class</code>
+"
+6828,1081217,,"		protected boolean initialized = false;
+		
+		FunctionConicProgramProxy(GroundCompatibilityKernel gk) {
+			if (gk.getWeight().getWeight() != 0.0) {
+				initialize();
+				addFunctionTerm(gk.getFunctionDefinition());
+				setWeight(gk.getWeight().getWeight());
+			}
+		}
+		
+		protected void initialize() {
+			if (!initialized) {
+				constraints = new Vector<ConstraintConicProgramProxy>(1);
+				
+				switch (type) {
+				case linear:
+					featureVar = program.createNonNegativeOrthantCone().getVariable();
+					break;
+				case quadratic:
+					featureVar = program.createNonNegativeOrthantCone().getVariable();
+					featureVar.setObjectiveCoefficient(0.0);
+					squaredFeatureVar = program.createNonNegativeOrthantCone().getVariable();
+					SecondOrderCone soc = program.createSecondOrderCone(3);
+					outerSquaredVar = soc.getNthVariable();
+					for (Variable v : soc.getVariables()) {
+						if (!v.equals(outerSquaredVar))
+							if (innerFeatureVar == null)
+								innerFeatureVar = v;
+							else
+								innerSquaredVar = v;
+					}
+					
+					innerFeatureCon = program.createConstraint();
+					innerFeatureCon.setVariable(featureVar, 1.0);
+					innerFeatureCon.setVariable(innerFeatureVar, -1.0);
+					innerFeatureCon.setConstrainedValue(0.0);
+					
+					innerSquaredCon = program.createConstraint();
+					innerSquaredCon.setVariable(innerSquaredVar, 1.0);
+					innerSquaredCon.setVariable(squaredFeatureVar, 0.5);
+					innerSquaredCon.setConstrainedValue(0.5);
+					
+					outerSquaredCon = program.createConstraint();
+					outerSquaredCon.setVariable(outerSquaredVar, 1.0);
+					outerSquaredCon.setVariable(squaredFeatureVar, -0.5);
+					outerSquaredCon.setConstrainedValue(0.5);
+					break;
+				}
+				
+				initialized = true;
+			}
+			else {
+				throw new IllegalStateException(""ConicProgramProxy has already been initialized."");
+			}
+		}
+		
+"
+7140,1094902,,"					params.append(urlencode_rfc3986(cid));
+				}
+
+				if (recaptchaChallenge != null &&  StringUtils.isNotBlank(recaptchaText)) {
+					params.append(""&recaptcha_challenge_field="");
+					params.append(urlencode_rfc3986(recaptchaChallenge));
+					params.append(""&recaptcha_response_field="");
+					params.append(urlencode_rfc3986(recaptchaText));
+"
+7156,1095323,,"@SuppressWarnings(""deprecation"")
+public abstract class AbstractSessionManager extends AbstractLifeCycle implements SessionManager
+{
+    final static Logger __log = SessionHandler.LOG;
+
+    public Set<SessionTrackingMode> __defaultSessionTrackingModes =
+        Collections.unmodifiableSet(
+            new HashSet<SessionTrackingMode>(
+                    Arrays.asList(new SessionTrackingMode[]{SessionTrackingMode.COOKIE,SessionTrackingMode.URL})));
+        
+    /* ------------------------------------------------------------ */
+    public final static int __distantFuture=60*60*24*7*52*20;
+
+"
+7404,1106228,,"import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.TextView;
+import android.widget.ImageButton;
+
+import org.sufficientlysecure.keychain.Constants;
+import org.sufficientlysecure.keychain.R;
+"
+7636,1111021,,"import com.ch_linghu.fanfoudroid.StatusActivity;
+import com.ch_linghu.fanfoudroid.data.Tweet;
+import com.ch_linghu.fanfoudroid.data.User;
+import com.ch_linghu.fanfoudroid.data.db.StatusTable;
+import com.ch_linghu.fanfoudroid.data.db.UserInfoTable;
+import com.ch_linghu.fanfoudroid.helper.Preferences;
+import com.ch_linghu.fanfoudroid.helper.Utils;
+import com.ch_linghu.fanfoudroid.task.GenericTask;
+"
+7742,1113895,,"	public AAInsert(AA T, int x) {
+		super(T);
+		this.T = T;
+		v = T.setNodeV(new AANode(T, K = x));
+		v.getReady(Colors.INSERT);
+		setHeader(""insertion"");
+	}
+
+"
+7754,1113940,,"	int height = 1, n = 0, e = 0;
+
+	public SkipList(VisPanel M) {
+		super(M, dsName);
+		M.screen.V.align = Alignment.LEFT;
+		root = new SkipNode(this, -Node.INF);
+		root.linkright(sent = new SkipNode(this, Node.INF));
+		reposition();
+"
+7861,1115377,,"        //set expectations
+        when(userService.getByUsername(""username"")).thenReturn(user);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPostsOfUser(Matchers.<JCUser> any(), Matchers.anyInt(), Matchers.anyBoolean()))
+            .thenReturn(postsPage);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(post.getTopic()).thenReturn(topic);
+
+        //invoke the object under test
+"
+7897,1116623,,"	private long lastUpdateTimeOfGraph;
+	private ModelLearningGraph modelLearningGraph = null;
+	private boolean useAlignmentGraphBuiltFromKnownModels = false;
+
+
+	private static final int NUM_SEMANTIC_TYPES = 1; //4;
+
+	public ModelLearner(OntologyManager ontologyManager, List<ColumnNode> columnNodes) {
+		if (ontologyManager == null || 
+				columnNodes == null || 
+				columnNodes.isEmpty()) {
+"
+8057,1122626,,"
+  void commit(CommitSession commitSession, List<Mutation> mutations);
+
+  /**
+   * If this method returns true, the caller must call {@link #finishUpdatingLogsUsed()} to clean up
+   */
+  boolean beginUpdatingLogsUsed(InMemoryMap memTable, DfsLogger copy, boolean mincFinish);
+
+  void finishUpdatingLogsUsed();
+
+"
+8272,1131849,,"
+@SuppressWarnings(""deprecation"")
+public class AccumuloDFSBase {
+
+  protected static Configuration conf = null;
+  protected static DefaultFileSystemManager vfs = null;
+  protected static MiniDFSCluster cluster = null;
+ 
+  private static URI HDFS_URI;
+
+  protected static URI getHdfsUri() {
+    return HDFS_URI;
+  }
+
+  @BeforeClass
+  public static void miniDfsClusterSetup() {
+    System.setProperty(""java.io.tmpdir"", System.getProperty(""user.dir"") + ""/target"");
+    // System.setProperty(""org.apache.commons.logging.Log"", ""org.apache.commons.logging.impl.NoOpLog"");
+    // Logger.getRootLogger().setLevel(Level.ERROR);
+    
+    // Put the MiniDFSCluster directory in the target directory
+    System.setProperty(""test.build.data"", ""target/build/test/data"");
+
+"
+8750,1152013,,"
+import java.util.HashSet;
+import java.util.LinkedList;
+import com.schneeloch.torontotransit.R;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import com.google.android.maps.GeoPoint;
+import com.google.common.base.Objects;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
+import android.content.Context;
+import android.content.OperationApplicationException;
+import android.graphics.drawable.Drawable;
+import android.os.RemoteException;
+import android.util.Log;
+import boston.Bus.Map.main.UpdateAsyncTask;
+import boston.Bus.Map.provider.DatabaseContentProvider.DatabaseAgent;
+import boston.Bus.Map.transit.TransitSource;
+"
+8815,1156173,,"package com.yahoo.omid.transaction;
+
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.yahoo.omid.committable.CommitTable;
+import com.yahoo.omid.metrics.NullMetricsProvider;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
+"
+8883,1156950,,"import net.floodlightcontroller.core.IFloodlightProviderService;
+import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.test.MockFloodlightProvider;
+import net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier;
+import net.floodlightcontroller.devicemanager.internal.Device;
+import net.floodlightcontroller.devicemanager.internal.Entity;
+import net.floodlightcontroller.counter.CounterStore;
+import net.floodlightcontroller.devicemanager.IDeviceManagerService;
+import net.floodlightcontroller.packet.Data;
+import net.floodlightcontroller.packet.Ethernet;
+"
+8957,1159289,,"    private final UUID accountId;
+    private final DateTime invoiceDate;
+    private final DateTime targetDate;
+    private final Currency currency;
+
+    public DefaultInvoice(UUID accountId, DateTime targetDate, Currency currency) {
+        this(UUID.randomUUID(), accountId, new DefaultClock().getUTCNow(), targetDate, currency);
+"
+9009,1159572,,"
+package com.ning.billing.entitlement.engine.core;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.inject.Inject;
+import com.ning.billing.config.EntitlementConfig;
+import com.ning.billing.entitlement.engine.dao.EntitlementDao;
+import com.ning.billing.entitlement.events.EntitlementEvent;
+import com.ning.billing.util.clock.Clock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public abstract class ApiEventProcessorBase implements EventNotifier {
+
+"
+9171,1169023,,"                    trait.setAttribute(""cy"", Double.toString(cy));
+                    trait.setAttribute(""r"", Double.toString(radius));
+
+                    String colour = getColour(gwasTrait, nexus);
+
+                    trait.setAttribute(""fill"",colour);
+                    trait.setAttribute(""stroke"",""black"");
+                    trait.setAttribute(""stroke-width"", ""0.5"");
+
+
+                String mo = ""showTooltip('"" + traitName + ""')"";
+                trait.setAttribute(""onmouseover"", mo);
+                trait.setAttribute(""onmouseout"", ""hideTooltip()"");
+                trait.setAttribute(""id"", traitName);
+
+                IRI iri = getTraitClass(gwasTrait, renderingContext, nexus, association);
+                String traitClass = OntologyUtils.getShortForm(iri, renderingContext);
+                getLog().trace(""Setting CSS class for trait '"" + gwasTrait + ""' to "" + traitClass);
+                trait.setAttribute(""class"", traitClass + "" gwas-trait"");
+
+                    String iri = gwasTrait.getIRI().toString();
+                    trait.setAttribute(""class"", iri);
+
+
+                    SVGArea currentArea = new SVGArea(cx,cy,2*radius,2*radius,0);
+"
+9308,1181751,,"			if (!isProtected(player, rm, x, y, z, block, minecraftID)) {
+				Digging diggingComponent = player.get(Digging.class);
+
+				if (!diggingComponent.stopDigging(new Point(w, x, y, z), true) || !isInteractable) {
+					if (!diggingComponent.isDigging()) {
+						session.send(new BlockChangeMessage(block, session.getPlayer().getNetworkSynchronizer().getRepositionManager()));
+						Sign sign = block.get(Sign.class);
+						if (sign != null) {
+							session.send(new SignMessage(block.getX(), block.getY(), block.getZ(), sign.getText(), player.getNetworkSynchronizer().getRepositionManager()));
+						}
+					}
+					return;
+"
+9741,1249981,,"    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        deployContrib(""org.nuxeo.theme.core"", ""OSGI-INF/nxthemes-core-service.xml"");
+        deployContrib(""org.nuxeo.theme.core"", ""OSGI-INF/nxthemes-core-contrib.xml"");
+        deployContrib(""org.nuxeo.theme.core.tests"", ""element-config.xml"");
+        ThemeService themeService = (ThemeService) Framework.getRuntime().getComponent(
+                ThemeService.ID);
+        typeRegistry = (TypeRegistry) themeService.getRegistry(""types"");
+"
+9879,1271810,,"        this.title = product.getTitle();
+        this.description = product.getDescription();
+        this.onShelf = product.getOnShelf();
+        this.price = product.getUnitPrice();
+        this.stock = product.getStock();
+
+        this.href = ""/api/1.0/product/"" + this.slug;
+
+"
+10146,1294566,,"	private float mHorizontalInitial;
+	private float mVerticalInitial;
+	
+
+	private float mTranslationTimer;
+	
+	private boolean mAdvanceEffectNumber;
+	
+	private float mTicker;
+	
+	private boolean calculate = false;
+	
+	public Translation(ByteBuffer translationData, ByteBuffer translationIndices)
+	{
+"
+10197,1296985,,"
+		stt.setGridCellsX(100);
+		stt.setGridCellsY(100);
+		stt.setGridSolver(new SimpleSolver());
+		stt.setInterpolator(new ChargeConservingCIC());
+
+		this.s = new Simulation(stt);
+		this.g = s.grid;
+"
+10326,1300989,,"    }
+
+    @Override
+    public void mutateMany(Map<String, Map<StaticBuffer, KCVMutation>> batch, StoreTransaction txh) throws BackendException {
+        MutationBatch m = keyspaceContext.getClient().prepareMutationBatch().withAtomicBatch(true)
+                .setConsistencyLevel(getTx(txh).getWriteConsistencyLevel().getAstyanax())
+                .withRetryPolicy(retryPolicy.duplicate());
+
+"
+10341,1301640,,"        private long lockWaitNS;
+        private int lockRetryCount;
+
+        private enum CleanerConfig {
+            NONE,
+            STANDARD,
+            CUSTOM
+        };
+
+        private CleanerConfig cleanerConfig = CleanerConfig.NONE;
+        private LockCleanerService customCleanerService;
+
+        public Builder(KeyColumnValueStore store, StoreManager manager) {
+            this.store = store;
+            this.manager = manager;
+            this.lockWaitNS = NANOSECONDS.convert(GraphDatabaseConfiguration.LOCK_WAIT.getDefaultValue(), MILLISECONDS);
+"
+10389,1302738,,"    }
+
+    /**
+     * @param encodedUsername encoded username to set
+     */
+    public void setEncodedUsername(String encodedUsername) {
+        this.encodedUsername = encodedUsername;
+    }
+}
+"
+10515,1310670,," * @since 2.0
+ * @noinstantiate This class is not intended to be instantiated by clients.
+ */
+@SuppressWarnings({""rawtypes"", ""unchecked""})
+public class PrimitiveType extends AnnotatableType {
+
+	/**
+ 	 * Primitive type codes (typesafe enumeration).
+"
+10664,1317185,,"		}
+
+		Greql2Vertex v;
+		EdgeClass ec;
+	}
+
+	@Override
+	protected boolean isEquivalent(Optimizer optimizer) {
+		if (optimizer instanceof ConditionalExpressionOptimizer) {
+			return true;
+		}
+"
+11124,1368944,,"    public static final int REQUEST_CODE_NFC = 0x00008002;
+
+    // For NFC data
+    protected Passphrase mSigningKeyPassphrase = null;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+"
+11214,1371859,,"				}
+				pnlModList.setVisible(true);
+				pnlRight.setVisible(true);
+				//btnUpdate.setEnabled(true);
+				ServerStatus status = ServerStatus.getStatus(selected.getAddress());
+				if (status != null) {
+					setLblStatus(""Idle - Server status: "" + status.getMOTD() + "" ("" + status.getPlayers() + ""/"" + status.getMaxPlayers() + "")"");
+				} else {
+					setLblStatus(""Idle - Server status: Unable to connect!"");
+				}
+			} else {
+				pnlModList.removeAll();
+				pnlRight.setVisible(false);
+"
+11270,1374858,,"
+        /**
+		 * ISSUE #2244: https://github.com/dotCMS/dotCMS/issues/2244
+		 * 
+		 */        
+       	handlers.add(new UserHandler());
+       	handlers.add(new CategoryHandler(config));
+       	handlers.add(new HostHandler(config));
+       	handlers.add(new FolderHandler(config));
+
+       	if(Config.getBooleanProperty(""PUSH_PUBLISHING_PUSH_STRUCTURES"")){
+       		handlers.add(new StructureHandler(config));
+   			/**
+"
+11357,1387384,,"    }
+
+    @Override
+    public String getMethod() {
+        return httpServletRequest.getMethod();
+    }
+
+    @Override
+    public String getParameter(String parameterName) {
+        return httpServletRequest.getParameter(parameterName);
+    }
+
+    @Override
+"
+11913,1409888,,"		.convert( regexToPayloadMap);
+
+		LexemeReader lexemeReader = new BufferedLexemeReader(""tests/resources/de/fuberlin/bii/source/tokenmatcher/regex.fun"");// new SimpleLexemeReader(
+		System.out.println( fsm);
+		System.out.println( new MinimalDfa( fsm));
+
+		Assert.assertTrue( fsm.isDeterministic());		
+		
+		
+"
+11949,1411498,,"    /**
+     * @see org.teiid.designer.ui.common.actions.ActionService#removeResourceChangeListener(org.eclipse.core.resources.IResourceChangeListener)
+     */
+    @Override
+    public void removeResourceChangeListener( IResourceChangeListener theListener ) {
+        IWorkspace workspace = ModelerCore.getWorkspace();
+        workspace.removeResourceChangeListener(theListener);
+    }
+"
+12207,1418870,,"import java.io.IOException;
+
+import io.realm.entities.AllTypes;
+import io.realm.entities.FieldOrder;
+import io.realm.entities.AnnotationTypes;
+import io.realm.exceptions.RealmMigrationNeededException;
+import io.realm.internal.ColumnType;
+import io.realm.internal.Table;
+"
+12567,1462841,,"
+    @Test
+    public void testImportNoMeta() throws IOException {
+        Importer i = new Importer(null, null, null, null, null, null, null, null,
+            null, config, null, null, null, i18n, null);
+        Owner owner = mock(Owner.class);
+        ConflictOverrides co = mock(ConflictOverrides.class);
+
+"
+12691,1474313,,"import org.geometerplus.android.util.DeviceType;
+
+public final class ZLAndroidLibrary extends ZLibrary {
+	public final ZLBooleanOption ShowStatusBarOption = new ZLBooleanOption(""LookNFeel"", ""ShowStatusBar"", false);
+	public final ZLBooleanOption ShowActionBarOption = new ZLBooleanOption(""LookNFeel"", ""ShowActionBar"", true);
+	public final ZLIntegerRangeOption BatteryLevelToTurnScreenOffOption = new ZLIntegerRangeOption(""LookNFeel"", ""BatteryLevelToTurnScreenOff"", 0, 100, 50);
+	public final ZLBooleanOption DontTurnScreenOffDuringChargingOption = new ZLBooleanOption(""LookNFeel"", ""DontTurnScreenOffDuringCharging"", true);
+	public final ZLIntegerRangeOption ScreenBrightnessLevelOption = new ZLIntegerRangeOption(""LookNFeel"", ""ScreenBrightnessLevel"", 0, 100, 0);
+	public final ZLBooleanOption EnableFullscreenModeOption = new ZLBooleanOption(""LookNFeel"", ""FullscreenMode"", true);
+	public final ZLBooleanOption DisableButtonLightsOption = new ZLBooleanOption(""LookNFeel"", ""DisableButtonLights"", !DeviceType.Instance().hasButtonLightsBug());
+
+	public static enum Device {
+		GENERIC,
+"
+12753,1484788,,"
+		myFBReaderApp.getViewWidget().repaint();
+
+		myShowStatusBarFlag = zlibrary.ShowStatusBarOption.getValue();
+		myShowActionBarFlag = zlibrary.ShowActionBarOption.getValue();
+		myActionBarIsVisible = myShowActionBarFlag;
+
+		final ActionBar bar = getActionBar();
+		bar.setDisplayOptions(
+			ActionBar.DISPLAY_SHOW_CUSTOM,
+			ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_TITLE
+		);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			bar.setDisplayUseLogoEnabled(false);
+		}
+		final TextView titleView = (TextView)getLayoutInflater().inflate(R.layout.title_view, null);
+		titleView.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				myFBReaderApp.runAction(ActionCode.SHOW_BOOK_INFO);
+			}
+		});
+		bar.setCustomView(titleView);
+		bar.setBackgroundDrawable(new ColorDrawable(ACTION_BAR_COLOR));
+
+		setTitle(myFBReaderApp.getTitle());
+
+		if (myFBReaderApp.getPopupById(TextSearchPopup.ID) == null) {
+			new TextSearchPopup(myFBReaderApp);
+		}
+		if (myFBReaderApp.getPopupById(SelectionPopup.ID) == null) {
+			new SelectionPopup(myFBReaderApp);
+"
+12759,1486182,,"import org.geometerplus.fbreader.library.*;
+import org.geometerplus.fbreader.network.HtmlUtil;
+
+import org.geometerplus.android.fbreader.ArabicReader;
+import org.geometerplus.android.fbreader.FBUtil;
+import org.geometerplus.android.fbreader.preferences.EditBookInfoActivity;
+
+public class BookInfoActivity extends Activity implements MenuItem.OnMenuItemClickListener {
+"
+12911,1506380,,"     * @throws IllegalStateException if already connected
+     * @since 1.4
+     */
+    @Override
+    public Map<String, List<String>> getRequestProperties() {
+        if (connected)
+            throw new IllegalStateException(""Already connected"");
+
+"

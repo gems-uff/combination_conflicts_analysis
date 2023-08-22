@@ -3,6 +3,9 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 
+# data_folder = "/Users/heleno/Documents/data"
+data_folder = "C:\\Users\\HelenoCampos\\Documents\\data"
+
 def get_chunk_composition_boxplot(data, patterns, variable, variable_text, axis):
     boxplot_data = []
     for pattern in patterns:
@@ -169,6 +172,9 @@ def get_strategies_plot_bins_percentages(df, v1_only, v2_only, v1v2, v2v1, varia
     return df
 
 def get_chunk_composition_pattern_data(pattern, data):
+    patterns = [' v1', ' v2', ' v1 v2', ' v2 v1']
+    if pattern == 'Others':
+        return data[~data['chunk_composition'].isin(patterns)]
     return data[data['chunk_composition'] == f' {pattern}']
 
 def get_normalized_composition_percentage_data(df):
@@ -223,10 +229,10 @@ def print_missing_lines(chunk_side, resolution):
     Total valid chunks: 10,177 
 '''
 def get_chunks_dataset():
-    df = pd.read_csv('data/chunks_info.csv')
-    df2 = pd.read_csv('data/partial_order_result.csv')
+    df = pd.read_csv(f'{data_folder}/chunks_info.csv')
+    df2 = pd.read_csv(f'{data_folder}/partial_order_result.csv')
     df = pd.merge(df, df2, on = ['chunk_id'])
-    df2 = pd.read_csv('data/resolution_composition.csv')
+    df2 = pd.read_csv(f'{data_folder}/resolution_composition.csv')
     df = pd.merge(df, df2, on=['chunk_id'])
     df['chunk_size'] = df['v1_size'] + df['v2_size']
     print('All chunks: ', len(df))
@@ -234,12 +240,13 @@ def get_chunks_dataset():
     print('Valid chunks: ', len(df))
     return df
 
+
 '''
     Filter chunks from projects that are implicit forks
 '''
 def filter_implicit_forks(complete_dataset):
-    intersection = pd.read_csv('data/projects_intersection.csv') # borrowed from another study
-    all_chunks = pd.read_csv('data/all_chunks_ghiotto.csv')
+    intersection = pd.read_csv(f'{data_folder}/projects_intersection.csv') # borrowed from another study
+    all_chunks = pd.read_csv(f'{data_folder}/all_chunks_ghiotto.csv')
     df = all_chunks[all_chunks['chunk_id'].isin(list(complete_dataset['chunk_id']))]
     selected_projects = df['project'].unique()
     print('Total projects: ', len(selected_projects))
